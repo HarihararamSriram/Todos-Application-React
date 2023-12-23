@@ -9,7 +9,7 @@ def create_app(config_class=Config):
 
     # Initialize Flask extensions here
     db.init_app(app)
-    migrate.init_app(app)
+    migrate.init_app(app, db)
 
     # Register blueprints here
     from .main import bp as main_bp
