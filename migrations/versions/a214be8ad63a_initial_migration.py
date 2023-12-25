@@ -1,8 +1,8 @@
 """Initial Migration
 
-Revision ID: 0893cfd639e4
+Revision ID: a214be8ad63a
 Revises: 
-Create Date: 2023-12-24 15:04:18.641437
+Create Date: 2023-12-25 19:32:38.057749
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '0893cfd639e4'
+revision = 'a214be8ad63a'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -21,10 +21,7 @@ def upgrade():
     op.create_table('users',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('user_name', sa.String(length=50), nullable=False),
-    sa.Column('email', sa.String(length=120), nullable=False),
-    sa.Column('hashed_password', sa.String(length=500), nullable=False),
     sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('email'),
     sa.UniqueConstraint('user_name')
     )
     op.create_table('todos',
@@ -41,7 +38,6 @@ def upgrade():
     op.create_table('image',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('file_name', sa.String(length=1000), nullable=False),
-    sa.Column('time_stamp', sa.DateTime(timezone=True), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=True),
     sa.Column('todo_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['todo_id'], ['todos.id'], ),
     sa.PrimaryKeyConstraint('id')

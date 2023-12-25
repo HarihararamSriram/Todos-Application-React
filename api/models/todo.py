@@ -18,6 +18,15 @@ class Todo(db.Model):
     images = db.relationship("Image", backref="todo", lazy=True)
     # One user, many todos
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "title": self.title,
+            "description": self.description,
+            "due_time": self.due_time,
+            "completed": self.completed,
+        }
 
     def __repr__(self):
         return f"<Todo(id={self.id}, title={self.title}, description={self.description}, user_id={self.user_id})>"
