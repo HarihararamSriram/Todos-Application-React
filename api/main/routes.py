@@ -5,6 +5,7 @@ from ariadne.explorer import ExplorerGraphiQL
 from api.schemas import schema
 from api.services.keycloakservices import KeycloakClientService
 from keycloak.exceptions import KeycloakAuthenticationError
+from api.extensions import keycloak_client
 
 explorer_html = ExplorerGraphiQL().html(None)
 
@@ -27,6 +28,7 @@ def my_api():
     try:
         data = request.json
         token_info = KeycloakClientService.login_user(data)
+        # print(">>", keycloak_client.exchange_token(token_info["access_token"], "flask_app", "react_app", "hasriram"))
         return token_info, 200
 
     except KeycloakAuthenticationError as e:

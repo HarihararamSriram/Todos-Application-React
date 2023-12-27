@@ -1,0 +1,61 @@
+.todo {
+    padding: 0.75rem;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 1rem;
+    display: flex;
+    column-gap: 1rem;
+    justify-content: space-between;
+}
+
+.todo-body {
+    /* word-break:normal; */
+    word-break: break-all;
+    flex: 1;
+    word-wrap: break-word;
+    padding: 0.5rem;
+}
+
+.todo-checked {
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+.todo > button {
+    background: transparent;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+}
+
+.todo-edit-form {
+    flex: 1;
+    padding: 0.15rem;
+}
+
+.todo-edit-form > input {
+    border: none;
+    padding: 0.45rem 0.55rem;
+    font-size: 1em;
+    outline: 2px solid yellowgreen;
+    width: 100%;
+    border-radius: 0.5rem;
+    background: transparent;
+}
+
+.todo-text {
+    outline: none;
+    background-color: transparent;
+    border: 0;
+    width: 100%;
+    padding: 0.5em 0;
+    display: block;
+    color: white;
+}
+
+.title {
+    font-weight: 700;
+    font-size: 1.5em;
+}
+
+.desc {
+    font-size: 1em;
+}
