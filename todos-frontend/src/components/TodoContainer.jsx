@@ -6,8 +6,15 @@ import { useState } from 'react';
 function TodoContainer() {
     const [todos, setTodos] = useState([]);
 
-    const addTodo = (todo) => {
-        setTodos((prev) => [...prev, todo]);
+    const addTodo = (newTodo) => {
+        setTodos((prev) => {
+            const newTodos = [...prev];
+            const index = newTodos.findIndex(
+                (todo) => todo.dueTime >= newTodo.dueTime,
+            );
+            newTodos.splice(index, 0, newTodo);
+            return newTodos;
+        });
     };
 
     const deleteTodo = (removeIndex) => {

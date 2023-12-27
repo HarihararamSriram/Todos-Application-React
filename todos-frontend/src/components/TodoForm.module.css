@@ -11,7 +11,7 @@
     align-items: center;
     padding-left: 0.75rem;
     column-gap: 1rem;
-    padding: 1rem 0;
+    padding: 1rem 0.5rem;
 }
 
 .two-rows-title-desc-cntr {
@@ -48,18 +48,6 @@
     border: 0 transparent;
     background-color: #61dafb;
     cursor: pointer;
-    outline: ;
-}
-
-.input-container input[type='datetime-local']{
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    background: transparent;
-    border: none;
-    outline: none;
-    box-shadow: none;
-    color-scheme: dark;
 }
 
 /* INPUT CONTAINER  */
@@ -68,15 +56,15 @@
     flex-direction: column;
     width: auto;
     height: auto;
-    padding: 5px 10px 10px 10px;
-    background: transparent;
+    /* padding: 5px 10px 10px 10px; */
+    background: var(--body-background-color);
     border-radius: 8px;
     filter: drop-shadow(0px 0px 3px #000);
     -webkit-filter: drop-shadow(0px 0px 3px #000);
     overflow: hidden;
     cursor: pointer;
     transition: 1s transform ease-out;
-    outline: 1px solid yellowgreen;
+    outline: 2px solid rgba(50, 205, 66, 0.313);
 }
 .input-container:hover,
 .input-container:focus,
@@ -88,25 +76,26 @@
 .input-container label {
     position: relative;
     width: 100%;
-    font-weight: 600;
+    font-weight: 700;
     font-size: 11px;
     line-height: 20px;
-    color: #61dafb;
-    margin-left: 2px;
+    color: darkblue;
     text-transform: uppercase;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    background: #61dafb;
+    padding: 0 4px;
 }
 .input-container input {
     position: relative;
     align-items: center;
-    width: auto;
     height: auto;
     font-weight: 600;
-    font-size: 0.5em;
+    font-size: 0.6rem;
     letter-spacing: 0.05em;
     line-height: 21px;
     text-transform: uppercase;
     margin-left: 0px;
+    padding: 0 4px;
 }

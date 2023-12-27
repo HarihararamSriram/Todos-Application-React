@@ -1,6 +1,6 @@
-function CheckBox({ checked, toggleCheck }) {
+function CheckBox({ className, checked, toggleCheck }) {
     return (
-        <button onClick={toggleCheck}>
+        <button className={className} onClick={toggleCheck}>
             {checked && '✅'}
             {!checked && '🟦'}
         </button>

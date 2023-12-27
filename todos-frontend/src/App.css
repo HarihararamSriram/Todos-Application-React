@@ -1,13 +1,24 @@
 #root {
-  font-size: 1em;
+    font-size: 1em;
 }
 
-main{
-  max-width: 40rem;
-  width: 90vw;
-  margin: 0 auto;
+main {
+    max-width: 40rem;
+    width: 90vw;
+    margin: 0 auto;
 }
 
-main>h1{
-  font-size: 4em;
+main > h1 {
+    font-size: 4em;
+}
+
+input[type='datetime-local'] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background: transparent;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    color-scheme: dark;
 }

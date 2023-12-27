@@ -3,6 +3,33 @@ import CheckBox from './CheckBox';
 import styles from './Todo.module.css';
 import delSvg from '../assets/del.svg';
 
+const dateToString = (date) => {
+    let year = date.getFullYear();
+    let month = date.getMonth() + 1;
+    let day = date.getDate();
+    let hour = date.getHours();
+    let minute = date.getMinutes();
+    let session = 'AM';
+    if (month.toString().length == 1) {
+        month = '0' + month;
+    }
+    if (day.toString().length == 1) {
+        day = '0' + day;
+    }
+    if (hour.toString().length == 1) {
+        hour = '0' + hour;
+        session = 'PM';
+    } else {
+        hour = hour - 12;
+    }
+    if (minute.toString().length == 1) {
+        minute = '0' + minute;
+    }
+    var dateTime =
+        day + '-' + month + '-' + year + ' ' + hour + ':' + minute + session;
+    return dateTime;
+};
+
 function Todo({
     description,
     title,
@@ -12,29 +39,6 @@ function Todo({
     deleteTodo,
     editTodo,
 }) {
-    const helper = (date) => {
-        var year = date.getFullYear();
-        var month = date.getMonth() + 1;
-        var day = date.getDate();
-        var hour = date.getHours();
-        var minute = date.getMinutes();
-        if (month.toString().length == 1) {
-            month = '0' + month;
-        }
-        if (day.toString().length == 1) {
-            day = '0' + day;
-        }
-        if (hour.toString().length == 1) {
-            hour = '0' + hour;
-        }
-        if (minute.toString().length == 1) {
-            minute = '0' + minute;
-        }
-        var dateTime =
-            day + '-' + month + '-' + year + ' ' + hour + ':' + minute;
-        return dateTime;
-    };
-
     const todoStyle = `${styles['todo']} ${
         completed ? styles['todo-checked'] : ''
     }`;
@@ -58,6 +62,7 @@ function Todo({
             {!editMode[0] && (
                 <>
                     <CheckBox
+                        className={styles['todo-buttons']}
                         checked={completed}
                         toggleCheck={toggleComplete}
                     />
@@ -77,56 +82,68 @@ function Todo({
                             </div>
                         </div>
 
-                        <div onClick={() => todoClickHandler('dueTime')}>
-                            {helper(new Date(dueTime))}
+                        <div
+                            className={styles['todo-text']}
+                            onClick={() => todoClickHandler('dueTime')}
+                        >
+                            {dateToString(new Date(dueTime))}
                         </div>
                     </div>
 
-                    <button onClick={deleteTodo}>
+                    <button
+                        className={styles['todo-buttons']}
+                        onClick={deleteTodo}
+                    >
                         <img src={delSvg} />
                     </button>
                 </>
             )}
             {editMode[0] && (
-                <form
-                    className={styles['todo-edit-form']}
-                    onSubmit={(e) => {
-                        e.preventDefault();
-                        setEditMode([false, null]);
-                    }}
-                    onBlur={() => {
-                        setEditMode([false, null]);
-                    }}
-                >
-                    {editMode[1] === 'description' && (
+                <>
+                    <button
+                        className={styles['edit-done-button']}
+                        type="submit"
+                        form="todo-edit-form"
+                    >
+                        Done
+                    </button>
+                    <form
+                        id="todo-edit-form"
+                        className={styles['todo-edit-form']}
+                        onSubmit={(e) => {
+                            console.log('Hari');
+                            e.preventDefault();
+                            setEditMode([false, null]);
+                        }}
+                        ref={formInputRef}
+                    >
                         <input
-                            ref={formInputRef}
+                            name={'title'}
+                            value={title}
+                            className={`${styles['todo-text']} ${styles['title']}`}
+                            onChange={(e) =>
+                                editModeInputChangeHandler(e, 'title')
+                            }
+                        />
+                        <input
+                            name="description"
+                            className={`${styles['todo-text']} ${styles['desc']}`}
                             value={description}
                             onChange={(e) =>
                                 editModeInputChangeHandler(e, 'description')
                             }
                         />
-                    )}
-                    {editMode[1] === 'title' && (
                         <input
-                            ref={formInputRef}
-                            value={title}
-                            onChange={(e) =>
-                                editModeInputChangeHandler(e, 'title')
-                            }
-                        />
-                    )}
-                    {editMode[1] === 'dueTime' && (
-                        <input
+                            name="dueTime"
+                            className={`${styles['todo-text']} ${styles['desc']}`}
                             type="datetime-local"
-                            ref={formInputRef}
                             value={dueTime}
                             onChange={(e) =>
                                 editModeInputChangeHandler(e, 'dueTime')
                             }
                         />
-                    )}
-                </form>
+                    </form>
+                </>
             )}
         </div>
     );
