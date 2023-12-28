@@ -3,6 +3,11 @@ schema {
     mutation: Mutation
 }
 
+type Query {
+    todos: TodosResult!
+    todo(todoId: ID!): TodoResult!
+}
+
 type Todo {
     id: ID!
     title: String!
@@ -12,31 +17,33 @@ type Todo {
 }
 
 type TodoResult {
-    success: Boolean!
-    errors: [String]
-    todo: Todo
+    data: Todo
+    index: Int
 }
 
 type TodosResult {
-    success: Boolean!
-    errors: [String]
-    todos: [Todo]
-}
-
-type Query {
-    todos: TodosResult!
-    todo(todoId: ID!): TodoResult!
+    data: [Todo]
 }
 
 type DeleteTodoResult {
     success: Boolean!
-    errors: [String]
+    removeIndex: Int
 }
 
 type Mutation {
-    createTodo(title: String!, description: String, dueTime: String!, userName: String!): TodoResult!
-    deleteTodo(todoId: ID!): DeleteTodoResult!
-    markTodo(todoId: ID!): TodoResult!
-    updateTodo(todoId: ID!,title:String,description:String, dueTime: String): TodoResult!
+    createTodo(
+        title: String!
+        description: String
+        dueTime: String!
+        userName: String!
+    ): TodoResult!
+    deleteTodo(todoId: ID!, removeIndex: Int): DeleteTodoResult!
+    markTodo(todoId: ID!, editIndex: Int): TodoResult!
+    updateTodo(
+        todoId: ID!
+        title: String
+        description: String
+        dueTime: String
+        editIndex: Int
+    ): TodoResult!
 }
-

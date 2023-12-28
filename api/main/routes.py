@@ -1,11 +1,14 @@
+import token
 from ariadne import graphql_sync
 from flask import render_template, request, current_app, jsonify
+import requests
 from . import bp
 from ariadne.explorer import ExplorerGraphiQL
 from api.schemas import schema
 from api.services.keycloakservices import KeycloakClientService
 from keycloak.exceptions import KeycloakAuthenticationError
 from api.extensions import keycloak_client
+from api.constants.keycloakconstants import KEYCLOAK_INTROSPECTION_URL
 
 explorer_html = ExplorerGraphiQL().html(None)
 
@@ -15,7 +18,7 @@ def index():
     return render_template("index.html")
 
 
-@bp.route('/login', methods=["GET"])
+@bp.route('/login', methods=["POST"])
 def my_api():
     """
     `param`
@@ -27,9 +30,16 @@ def my_api():
     """
     try:
         data = request.json
-        token_info = KeycloakClientService.login_user(data)
+        print(">>", data)
+        # token_info = KeycloakClientService.login_user(data)
+        status = keycloak_client.introspect(data.get("access_token"))
+        # print(status)
         # print(">>", keycloak_client.exchange_token(token_info["access_token"], "flask_app", "react_app", "hasriram"))
-        return token_info, 200
+
+        # data = requests.post("http://localhost:5000/graphql", headers={
+        #     'authorization': f"Bearer f{token_info["access_token"]}"
+        # })
+        return status, 200
 
     except KeycloakAuthenticationError as e:
         return {"message": "Invalid credentials"}, 404
@@ -41,8 +51,26 @@ def my_api():
 @bp.route("/graphql", methods=["GET"])
 def graphql_playground():
     print(*request.headers.keys())
-    print(request.headers["Authorization"])
+    # print(request.headers["Authorization"])
     return explorer_html, 200
+
+
+@bp.before_request
+def auth_middleware():
+    print(request.endpoint)
+    if request.endpoint == "main.graphql_server":
+        try:
+            headers = dict(request.headers)
+            auth_header = headers.get("Authorization", None)
+            if(auth_header):
+                access_token = auth_header.replace("Bearer ", "")
+                #* Introspecting the access token we received from front-end
+                token_info = keycloak_client.introspect(access_token)
+                if(not token_info["active"]):
+                    return {"error": "Cannot access, access token is not valid; Please check or consider refreshing."}, 401
+        except Exception as e:
+            # On failure, UNAUTHORIZED ACCESS
+            return {"error": str(e)}, 401
 
 
 @bp.route("/graphql", methods=["POST"])

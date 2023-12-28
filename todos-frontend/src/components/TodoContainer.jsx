@@ -1,60 +1,119 @@
 import Todo from './Todo';
 import TodoForm from './TodoForm';
 import styles from './TodoContainer.module.css';
-import { useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import TodoContext from '../store/Todo-Context';
+import { useMutation } from '@apollo/client';
+import {
+    ADD_TODO_QUERY,
+    DELETE_TODO_QUERY,
+    EDIT_TODO_QUERY,
+    TOGGLE_TODO_QUERY,
+} from '../store/TodoQueries';
+import Profile from './Profile';
+
+const [LOAD, ADD, DEL, EDIT, TOGGLE_COMPLETE, ERROR, LOADING] = [
+    0, 1, 2, 3, 4, 5, 6,
+];
 
 function TodoContainer() {
-    const [todos, setTodos] = useState([]);
+    const todoCtx = useContext(TodoContext);
+    const { dispatch, todos, loading } = todoCtx;
 
-    const addTodo = (newTodo) => {
-        setTodos((prev) => {
-            const newTodos = [...prev];
-            const index = newTodos.findIndex(
-                (todo) => todo.dueTime >= newTodo.dueTime,
-            );
-            newTodos.splice(index, 0, newTodo);
-            return newTodos;
-        });
-    };
+    const [
+        createTodo,
+        { data: data_add, loading: loading_add, error: error_add },
+    ] = useMutation(ADD_TODO_QUERY);
 
-    const deleteTodo = (removeIndex) => {
-        setTodos((prev) => prev.filter((todo, index) => index !== removeIndex));
-    };
+    const [
+        deleteTodo,
+        { data: data_del, loading: loading_del, error: error_del },
+    ] = useMutation(DELETE_TODO_QUERY);
 
-    const toggleComplete = (index) => {
-        setTodos((prev) => {
-            const newTodos = [...prev];
+    const [
+        markTodo,
+        { data: data_tog, loading: loading_tog, error: error_tog },
+    ] = useMutation(TOGGLE_TODO_QUERY);
 
-            newTodos[index].completed = !newTodos[index].completed;
-            return newTodos;
-        });
-    };
-
-    const editTodo = (index, changes) => {
-        setTodos((prev) => {
-            const newTodos = [...prev];
-            for (const key in changes) {
-                newTodos[index][key] = changes[key];
+    useEffect(() => {
+        if (!loading_add) {
+            if (data_add) {
+                console.log(data_add);
+                dispatch({ type: ADD, newTodo: data_add.createTodo.data });
             }
-            return newTodos;
+        }
+        if (error_add) {
+            dispatch({ type: ERROR, message: error_add.message });
+        }
+    }, [loading_add, error_add]);
+
+    useEffect(() => {
+        if (!loading_del && data_del) {
+            console.log(data_del);
+            dispatch({
+                type: DEL,
+                removeIndex: data_del.deleteTodo.removeIndex,
+            });
+        }
+        if (error_del) {
+            dispatch({ type: ERROR, message: error_del.message });
+        }
+    }, [loading_del, error_del]);
+
+    useEffect(() => {
+        if (!loading_tog && data_tog) {
+            console.log(data_tog);
+            dispatch({
+                type: TOGGLE_COMPLETE,
+                editIndex: data_tog.markTodo.index,
+            });
+        }
+        if (error_tog) {
+            dispatch({ type: ERROR, message: error_tog.message });
+        }
+    }, [loading_tog, error_tog]);
+
+    const addTodoFunc = (newTodo) => {
+        createTodo({ variables: { ...newTodo, userName: 'hasriram' } });
+    };
+
+    const deleteTodoFunc = (removeIndex) => {
+        deleteTodo({
+            variables: { todoId: todos[removeIndex].id, removeIndex },
+        });
+        // dispatch({ type: DEL, removeIndex });
+    };
+
+    const toggleComplete = (editIndex) => {
+        markTodo({ variables: { todoId: todos[editIndex].id, editIndex } });
+    };
+
+    const editTodo = (editIndex, changes) => {
+        dispatch({
+            type: EDIT,
+            changes: changes,
+            editIndex: editIndex,
         });
     };
 
     return (
         <>
-            <TodoForm addTodo={addTodo} />
+            <Profile />
+            <TodoForm addTodo={addTodoFunc} />
             <div className={styles['todo-list-container']}>
-                {todos.map((todo, index) => {
-                    return (
-                        <Todo
-                            key={todo['id']}
-                            toggleComplete={() => toggleComplete(index)}
-                            editTodo={(changes) => editTodo(index, changes)}
-                            deleteTodo={() => deleteTodo(index)}
-                            {...todo}
-                        />
-                    );
-                })}
+                {!loading &&
+                    todos.map((todo, index) => {
+                        return (
+                            <Todo
+                                key={todo['id']}
+                                index={index}
+                                toggleComplete={() => toggleComplete(index)}
+                                editTodo={(changes) => editTodo(index, changes)}
+                                deleteTodo={() => deleteTodoFunc(index)}
+                                {...todo}
+                            />
+                        );
+                    })}
             </div>
         </>
     );

@@ -1,7 +1,10 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useContext } from 'react';
 import CheckBox from './CheckBox';
 import styles from './Todo.module.css';
 import delSvg from '../assets/del.svg';
+import { EDIT_TODO_QUERY } from '../store/TodoQueries';
+import TodoContext from '../store/Todo-Context';
+import { useMutation } from '@apollo/client';
 
 const dateToString = (date) => {
     let year = date.getFullYear();
@@ -29,8 +32,11 @@ const dateToString = (date) => {
         day + '-' + month + '-' + year + ' ' + hour + ':' + minute + session;
     return dateTime;
 };
+const [EDIT, ERROR] = [3, 5];
 
 function Todo({
+    index,
+    id,
     description,
     title,
     dueTime,
@@ -45,6 +51,29 @@ function Todo({
     const formInputRef = useRef(null);
     const [editMode, setEditMode] = useState([false, null]);
 
+    const todoCtx = useContext(TodoContext);
+    const { dispatch } = todoCtx;
+
+    const [
+        updateTodo,
+        { data: data_upd, loading: loading_upd, error: error_upd },
+    ] = useMutation(EDIT_TODO_QUERY);
+
+    useEffect(() => {
+        if (!loading_upd && data_upd) {
+            console.log(data_upd);
+            console.log(data_upd.updateTodo.data);
+            dispatch({
+                type: EDIT,
+                changes: data_upd.updateTodo.data,
+                editIndex: data_upd.updateTodo.index,
+            });
+        }
+        if (error_upd) {
+            dispatch({ type: ERROR, message: error_upd.message });
+        }
+    }, [loading_upd, error_upd]);
+
     useEffect(() => {
         if (editMode[0]) formInputRef.current.focus();
     }, [editMode]);
@@ -57,6 +86,15 @@ function Todo({
     const todoClickHandler = (field) => {
         setEditMode([true, field]);
     };
+
+    const editSubmitHandler = (e) => {
+        e.preventDefault();
+        updateTodo({
+            variables: {todoId: id, title, description, dueTime, editIndex: index },
+        });
+        setEditMode([false, null]);
+    };
+
     return (
         <div className={todoStyle}>
             {!editMode[0] && (
@@ -110,11 +148,7 @@ function Todo({
                     <form
                         id="todo-edit-form"
                         className={styles['todo-edit-form']}
-                        onSubmit={(e) => {
-                            console.log('Hari');
-                            e.preventDefault();
-                            setEditMode([false, null]);
-                        }}
+                        onSubmit={editSubmitHandler}
                         ref={formInputRef}
                     >
                         <input

@@ -11,13 +11,12 @@ const DEFAULT_TODO = {
 function TodoForm({ addTodo }) {
     const [todo, setTodo] = useState(DEFAULT_TODO);
     const submitHandler = (e) => {
-        console.log(todo);
         e.preventDefault();
         for (const field in todo) {
             const val = todo[field];
             if (typeof val === 'string' && val.trim().length === 0) return -1;
         }
-        addTodo({ id: Date.now(), ...todo });
+        addTodo(todo);
         setTodo(DEFAULT_TODO);
     };
     const changeHandler = (e, field) => {
