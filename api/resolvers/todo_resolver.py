@@ -32,6 +32,11 @@ def resolve_create_todo(obj, _, title, due_time, user_name, description=None):
     # Converting the Javascript Datetime to Python datetime.datetime object for `due_time`
     due_time = datetime.strptime(due_time, '%Y-%m-%dT%H:%M')
     user = User.query.filter(User.user_name == user_name).first()
+    if(user is None):
+        # Create a new user when user doesn't exist.
+        user = User(user_name=user_name)
+        db.session.add(user)
+        
     todo = Todo(title=title, description=description, due_time=due_time)
     user.todos.append(todo)
     db.session.commit()

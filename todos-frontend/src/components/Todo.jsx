@@ -20,10 +20,14 @@ const dateToString = (date) => {
         day = '0' + day;
     }
     if (hour.toString().length == 1) {
-        hour = '0' + hour;
+        if (hour == 0) hour = 12;
+        else hour = '0' + hour;
         session = 'PM';
     } else {
-        hour = hour - 12;
+        if (hour != 12) {
+            hour = hour - 12;
+            hour = '0' + hour;
+        }
     }
     if (minute.toString().length == 1) {
         minute = '0' + minute;
@@ -90,7 +94,13 @@ function Todo({
     const editSubmitHandler = (e) => {
         e.preventDefault();
         updateTodo({
-            variables: {todoId: id, title, description, dueTime, editIndex: index },
+            variables: {
+                todoId: id,
+                title,
+                description,
+                dueTime,
+                editIndex: index,
+            },
         });
         setEditMode([false, null]);
     };

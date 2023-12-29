@@ -3,9 +3,12 @@
 }
 
 main {
+    display: flex;
+    flex-direction: column;
     max-width: 40rem;
     width: 90vw;
     margin: 0 auto;
+    padding-bottom: 4rem;
 }
 
 main > h1 {

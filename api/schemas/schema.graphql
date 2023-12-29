@@ -6,6 +6,8 @@ schema {
 type Query {
     todos: TodosResult!
     todo(todoId: ID!): TodoResult!
+    error: String
+    isTokenActive: Boolean
 }
 
 type Todo {

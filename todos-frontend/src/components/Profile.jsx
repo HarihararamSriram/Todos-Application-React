@@ -1,23 +1,4 @@
-import { useKeycloak } from '@react-keycloak/web';
-import { useEffect } from 'react';
-import axios from 'axios';
-
-const Profile = () => {
-    const { keycloak, initialized } = useKeycloak();
-
-    // useEffect(() => {
-    //     (async () => {
-    //         try {
-    //             const res = await axios.post('http://localhost:5000/login', {
-    //                 access_token: keycloak.token,
-    //                 username: 'Hari',
-    //             });
-    //             console.log(res);
-    //         } catch (e) {
-    //             console.log(e);
-    //         }
-    //     })();
-    // }, []);
+const Profile = ({ keycloak, initialized }) => {
     if (!initialized) {
         return <div>Loading...</div>;
     }
@@ -26,6 +7,10 @@ const Profile = () => {
             <h1>
                 Welcome,{' '}
                 {keycloak.authenticated ? keycloak.tokenParsed.name : 'Guest'}
+                {/* {' @'}
+                {keycloak.authenticated
+                    ? keycloak.tokenParsed.preferred_username
+                    : ''} */}
             </h1>
         </div>
     );
