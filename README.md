@@ -30,6 +30,6 @@ Execute the `run.bat` file that runs the following commands:
 
 > Work pending
 
-* Premium feature Stripe Payment and image upload functionality.
+* Premium feature Stripe Payment and image upload functionality for paid users.
 
 90% Completed on the requirements.
