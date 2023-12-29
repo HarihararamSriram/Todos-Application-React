@@ -2,6 +2,7 @@ import { useEffect, useReducer } from 'react';
 import { useQuery } from '@apollo/client';
 import TodoContext from './Todo-Context';
 import { ALL_TODO_QUERY } from './TodoQueries';
+import { useKeycloak } from '@react-keycloak/web';
 
 const [LOAD, ADD, DEL, EDIT, TOGGLE_COMPLETE, ERROR, LOADING] = [
     0, 1, 2, 3, 4, 5, 6,
@@ -48,7 +49,7 @@ const todoReducer = (state, action) => {
         }
 
         case ERROR: {
-            return { ...state, error: action.message };
+            return { ...state, error: action.message, loading: false };
         }
 
         case LOADING: {
@@ -59,6 +60,7 @@ const todoReducer = (state, action) => {
 
 function TodoProvider(props) {
     const { loading, error, data } = useQuery(ALL_TODO_QUERY);
+    const { keycloak, initialized } = useKeycloak();
 
     const [state, dispatch] = useReducer(todoReducer, {
         todos: [],
@@ -69,27 +71,27 @@ function TodoProvider(props) {
     useEffect(() => {
         if (loading) dispatch({ type: LOADING, loading: true });
         else {
-            dispatch({ type: LOAD, todos: [...data.todos.data] });
-            dispatch({ type: LOADING, loading: false });
+            console.log('>>', data);
+            if (data) {
+                if (data.error) {
+                    // An error can be returned by the graphql endpoint when (1) Access Token is old (2) The access token is invalid and wasn't introspected successfully.
+                    //(1)
+                    if (data.isTokenActive) {
+                        // Code for refreshing the token
+                        (async () => await keycloak.updateToken())();
+                    } else {
+                        //(2)
+                        dispatch({ type: ERROR, message: data.error });
+                    }
+                } else {
+                    dispatch({ type: LOAD, todos: [...data.todos.data] });
+                    dispatch({ type: LOADING, loading: false });
+                }
+            }
         }
         if (error) dispatch({ type: ERROR, message: error });
     }, [loading, error]);
 
-    // useEffect(() => {
-    //     dispatch({ type: LOADING, loading: true });
-    //     (async () => {
-    //         try {
-    //             const result = await client.query({
-    //                 query: ,
-    //             });
-    //             dispatch({ type: LOAD, todos: [...result.data.todos.data] });
-    //         } catch (e) {
-    //             dispatch({ type: ERROR, message: e });
-    //             console.log(e);
-    //         }
-    //     })();
-    //     dispatch({ type: LOADING, loading: false });
-    // }, []);
     return (
         <TodoContext.Provider
             value={{

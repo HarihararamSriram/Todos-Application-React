@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import styles from './TodoForm.module.css';
+import picUplSvg from '../assets/add_photo.svg';
 
 const DEFAULT_TODO = {
     description: '',
@@ -46,19 +47,23 @@ function TodoForm({ addTodo }) {
                         onChange={(e) => changeHandler(e, 'description')}
                     />
                 </div>
-                <div
-                    className={styles['input-container']}
-                    id="date-picker-container"
-                >
-                    <label htmlFor="date-from">Due</label>
-                    <input
-                        value={todo['dueTime']}
-                        onChange={(e) => changeHandler(e, 'dueTime')}
-                        type="datetime-local"
-                        id="date-checkin"
-                        className={styles['date-field']}
-                        name="date-from"
-                    />
+                <div>
+                    <input type="file" />
+                    <img src={picUplSvg} />
+                    <div
+                        className={styles['input-container']}
+                        id="date-picker-container"
+                    >
+                        <label htmlFor="date-from">Due</label>
+                        <input
+                            value={todo['dueTime']}
+                            onChange={(e) => changeHandler(e, 'dueTime')}
+                            type="datetime-local"
+                            id="date-checkin"
+                            className={styles['date-field']}
+                            name="date-from"
+                        />
+                    </div>
                 </div>
             </div>
         </form>

@@ -98,10 +98,10 @@ function TodoContainer() {
 
     return (
         <>
-            <Profile />
             <TodoForm addTodo={addTodoFunc} />
             <div className={styles['todo-list-container']}>
                 {!loading &&
+                    todos &&
                     todos.map((todo, index) => {
                         return (
                             <Todo

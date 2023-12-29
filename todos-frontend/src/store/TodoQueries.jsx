@@ -11,6 +11,8 @@ export const ALL_TODO_QUERY = gql`
                 completed
             }
         }
+        error
+        isTokenActive
     }
 `;
 
