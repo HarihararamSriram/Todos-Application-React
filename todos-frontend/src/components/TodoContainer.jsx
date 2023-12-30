@@ -1,22 +1,18 @@
 import Todo from './Todo';
 import TodoForm from './TodoForm';
 import styles from './TodoContainer.module.css';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect } from 'react';
 import TodoContext from '../store/Todo-Context';
 import { useMutation } from '@apollo/client';
 import {
     ADD_TODO_QUERY,
     DELETE_TODO_QUERY,
-    EDIT_TODO_QUERY,
     TOGGLE_TODO_QUERY,
 } from '../store/TodoQueries';
-import Profile from './Profile';
 
-const [LOAD, ADD, DEL, EDIT, TOGGLE_COMPLETE, ERROR, LOADING] = [
-    0, 1, 2, 3, 4, 5, 6,
-];
+const [ADD, DEL, EDIT, TOGGLE_COMPLETE, ERROR] = [1, 2, 3, 4, 5];
 
-function TodoContainer() {
+function TodoContainer({ username }) {
     const todoCtx = useContext(TodoContext);
     const { dispatch, todos, loading } = todoCtx;
 
@@ -74,7 +70,7 @@ function TodoContainer() {
     }, [loading_tog, error_tog]);
 
     const addTodoFunc = (newTodo) => {
-        createTodo({ variables: { ...newTodo, userName: 'hasriram' } });
+        createTodo({ variables: { ...newTodo, userName: username } });
     };
 
     const deleteTodoFunc = (removeIndex) => {

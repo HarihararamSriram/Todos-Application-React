@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 export const ALL_TODO_QUERY = gql`
-    query getTodos {
-        todos {
+    query getTodos($username: String!) {
+        todos(username: $username) {
             data {
                 id
                 title

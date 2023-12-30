@@ -4,9 +4,13 @@ from api.models import Todo, User
 from datetime import datetime
 
 
-def resolve_todos(obj, _):
+def resolve_todos(obj, _, username=None):
     # Get all todos
-    todos = Todo.query.all()
+    print(">>-", username)
+    if(username is None):
+        todos = Todo.query.all()
+    else:
+        todos = User.query.filter(User.user_name == username).first().todos
 
     return {
         "data": todos

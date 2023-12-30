@@ -4,13 +4,13 @@ import TodoContext from './Todo-Context';
 import { ALL_TODO_QUERY } from './TodoQueries';
 import { useKeycloak } from '@react-keycloak/web';
 
-const [LOAD, ADD, DEL, EDIT, TOGGLE_COMPLETE, ERROR, LOADING] = [
+const [INIT_LOAD, ADD, DEL, EDIT, TOGGLE_COMPLETE, ERROR, LOADING] = [
     0, 1, 2, 3, 4, 5, 6,
 ];
 
 const todoReducer = (state, action) => {
     switch (action.type) {
-        case LOAD: {
+        case INIT_LOAD: {
             return { ...state, todos: action.todos, error: null };
         }
         case ADD: {
@@ -59,7 +59,9 @@ const todoReducer = (state, action) => {
 };
 
 function TodoProvider(props) {
-    const { loading, error, data } = useQuery(ALL_TODO_QUERY);
+    const { loading, error, data } = useQuery(ALL_TODO_QUERY, {
+        variables: { username: props.username },
+    });
     const { keycloak, initialized } = useKeycloak();
 
     const [state, dispatch] = useReducer(todoReducer, {
@@ -84,7 +86,7 @@ function TodoProvider(props) {
                         dispatch({ type: ERROR, message: data.error });
                     }
                 } else {
-                    dispatch({ type: LOAD, todos: [...data.todos.data] });
+                    dispatch({ type: INIT_LOAD, todos: [...data.todos.data] });
                     dispatch({ type: LOADING, loading: false });
                 }
             }

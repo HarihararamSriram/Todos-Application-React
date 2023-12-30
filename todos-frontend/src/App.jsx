@@ -93,8 +93,17 @@ function App() {
                                 initialized={initialized}
                             />
                             {accessToken && (
-                                <TodoProvider>
-                                    <TodoContainer />
+                                <TodoProvider
+                                    username={
+                                        keycloak.tokenParsed.preferred_username
+                                    }
+                                >
+                                    <TodoContainer
+                                        username={
+                                            keycloak.tokenParsed
+                                                .preferred_username
+                                        }
+                                    />
                                 </TodoProvider>
                             )}
                         </main>

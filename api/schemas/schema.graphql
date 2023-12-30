@@ -4,7 +4,7 @@ schema {
 }
 
 type Query {
-    todos: TodosResult!
+    todos(username: String): TodosResult!
     todo(todoId: ID!): TodoResult!
     error: String
     isTokenActive: Boolean
