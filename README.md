@@ -2,7 +2,7 @@
 
 ## Stack
 React Flask/GraphQL Application with OIDC support from KeyCloak IDP; Payments through Stripe
-Database used: 
+Database used: SQLite
 
 ## To install the dependencies
 
