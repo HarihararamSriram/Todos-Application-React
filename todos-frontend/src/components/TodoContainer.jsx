@@ -1,7 +1,7 @@
 import Todo from './Todo';
 import TodoForm from './TodoForm';
 import styles from './TodoContainer.module.css';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import TodoContext from '../store/Todo-Context';
 import { useMutation } from '@apollo/client';
 import {
@@ -9,12 +9,21 @@ import {
     DELETE_TODO_QUERY,
     TOGGLE_TODO_QUERY,
 } from '../store/TodoQueries';
+import axios from 'axios';
 
 const [ADD, DEL, EDIT, TOGGLE_COMPLETE, ERROR] = [1, 2, 3, 4, 5];
+const EMPTY_TODO_FORM = {
+    description: '',
+    title: '',
+    dueTime: '',
+    completed: false,
+    image: null,
+};
 
-function TodoContainer({ username }) {
+function TodoContainer() {
     const todoCtx = useContext(TodoContext);
-    const { dispatch, todos, loading } = todoCtx;
+    const { dispatch, todos, loading, username } = todoCtx;
+    const [todoFormData, setTodoFormData] = useState(EMPTY_TODO_FORM);
 
     const [
         createTodo,
@@ -34,8 +43,28 @@ function TodoContainer({ username }) {
     useEffect(() => {
         if (!loading_add) {
             if (data_add) {
-                console.log(data_add);
-                dispatch({ type: ADD, newTodo: data_add.createTodo.data });
+                (async () => {
+                    try {
+                        const { image } = todoFormData;
+                        const imgUpldFormData = new FormData();
+                        imgUpldFormData.append(
+                            'todo_id',
+                            data_add.createTodo.data.id,
+                        );
+                        imgUpldFormData.append('todo_img', image);
+                        const imgUpldRes = await axios.post(
+                            'http://localhost:5000/image-upload',
+                            imgUpldFormData,
+                        );
+                        dispatch({
+                            type: ADD,
+                            newTodo: data_add.createTodo.data,
+                        });
+                        setTodoFormData(EMPTY_TODO_FORM);
+                    } catch (e) {
+                        console.log(e);
+                    }
+                })();
             }
         }
         if (error_add) {
@@ -45,7 +74,6 @@ function TodoContainer({ username }) {
 
     useEffect(() => {
         if (!loading_del && data_del) {
-            console.log(data_del);
             dispatch({
                 type: DEL,
                 removeIndex: data_del.deleteTodo.removeIndex,
@@ -58,7 +86,6 @@ function TodoContainer({ username }) {
 
     useEffect(() => {
         if (!loading_tog && data_tog) {
-            console.log(data_tog);
             dispatch({
                 type: TOGGLE_COMPLETE,
                 editIndex: data_tog.markTodo.index,
@@ -92,9 +119,20 @@ function TodoContainer({ username }) {
         });
     };
 
+    const submitTodoForm = () => {
+        // Sending the form data to graphql endpoint *excluding* the image.
+        const { image, ...newTodoData } = todoFormData;
+        addTodoFunc(newTodoData);
+    };
+
     return (
         <>
-            <TodoForm addTodo={addTodoFunc} />
+            <TodoForm
+                addTodo={addTodoFunc}
+                todo={todoFormData}
+                setTodo={setTodoFormData}
+                submitTodoForm={submitTodoForm}
+            />
             <div className={styles['todo-list-container']}>
                 {!loading &&
                     todos &&

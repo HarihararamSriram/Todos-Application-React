@@ -6,8 +6,16 @@ schema {
 type Query {
     todos(username: String): TodosResult!
     todo(todoId: ID!): TodoResult!
+    images(todoId: ID!): [String!]!
     error: String
     isTokenActive: Boolean
+    user(username: String!): User!
+}
+
+type User{
+    id: ID!
+    username: String!
+    isPremium: Boolean!
 }
 
 type Todo {
@@ -48,4 +56,5 @@ type Mutation {
         dueTime: String
         editIndex: Int
     ): TodoResult!
+    setUserPremium(username: String!): User!
 }

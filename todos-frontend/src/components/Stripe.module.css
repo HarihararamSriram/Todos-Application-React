@@ -1,0 +1,33 @@
+.prem-btn-header {
+    padding: 1.25rem 1rem;
+    display: flex;
+}
+
+.prem-btn-wrppr {
+    background-color: white;
+    border: none;
+    padding: 0.2rem;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.prem-btn {
+    z-index: 1;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    font-weight: bold;
+    background-color: #4caf50; /* Green background color */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+}
+
+.prem-btn:hover {
+    background-color: #257a29; /* Darker green on hover */
+}
+.prem-btn-wrppr:hover {
+    background-color: #257a29;
+}

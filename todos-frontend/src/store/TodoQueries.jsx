@@ -85,3 +85,29 @@ export const EDIT_TODO_QUERY = gql`
         }
     }
 `;
+
+export const TODO_IMAGES_QUERY = gql`
+    query fetchTodoImages($todoId: ID!) {
+        images(todoId: $todoId)
+    }
+`;
+
+export const GET_USER = gql`
+    query getUser($username: String!) {
+        images(username: $username) {
+            id
+            is_premium
+            username
+        }
+    }
+`;
+
+export const SET_USER_PREMIUM = gql`
+    mutation setUserPremium($username: String!) {
+        setUserPremium(username: $username) {
+            id
+            is_premium
+            username
+        }
+    }
+`;

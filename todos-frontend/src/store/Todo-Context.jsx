@@ -4,6 +4,7 @@ const TodoContext = React.createContext({
     todos: [],
     error: null,
     loading: true,
+    username: "",
     dispatch: () => {},
 });
 

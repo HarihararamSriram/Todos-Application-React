@@ -1,31 +1,43 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import styles from './TodoForm.module.css';
 import picUplSvg from '../assets/add_photo.svg';
 
-const DEFAULT_TODO = {
-    description: '',
-    title: '',
-    dueTime: '',
-    completed: false,
-};
-
-function TodoForm({ addTodo }) {
-    const [todo, setTodo] = useState(DEFAULT_TODO);
-    const submitHandler = (e) => {
-        e.preventDefault();
-        for (const field in todo) {
-            const val = todo[field];
-            if (typeof val === 'string' && val.trim().length === 0) return -1;
-        }
-        addTodo(todo);
-        setTodo(DEFAULT_TODO);
+function TodoForm({ todo, setTodo, submitTodoForm }) {
+    const uploadedImage = todo['image'];
+    const setUploadedImage = (newImage) => {
+        setTodo((prev) => {
+            return { ...prev, image: newImage };
+        });
     };
-    const changeHandler = (e, field) => {
+    const imageInputRef = useRef(null);
+
+    const imageInputChangeHandler = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setUploadedImage(file);
+            console.log(`Uploaded file ${file.name}`);
+        }
+    };
+    const fieldChangeHandler = (e, field) => {
         setTodo((prev) => {
             const newTodo = { ...prev };
             newTodo[field] = e.target.value;
             return newTodo;
         });
+    };
+
+    const submitHandler = (e) => {
+        e.preventDefault();
+
+        for (const field in todo) {
+            const val = todo[field];
+            //? `uploadedImage` is 'image' field in 'todo'
+            if (field == 'image' && !val) return -1;
+
+            if (typeof val === 'string' && val.trim().length === 0) return -1;
+        }
+        //* Setting the todoFormData state in parent, with form data. We will reset the form, after successful submission in parent
+        submitTodoForm();
     };
     return (
         <form onSubmit={submitHandler} className={styles['todo-form']}>
@@ -36,7 +48,7 @@ function TodoForm({ addTodo }) {
                 <div className={styles['two-rows-title-desc-cntr']}>
                     <input
                         value={todo['title']}
-                        onChange={(e) => changeHandler(e, 'title')}
+                        onChange={(e) => fieldChangeHandler(e, 'title')}
                         placeholder="Title"
                         className={`${styles['todo-text']} ${styles['title']}`}
                     />
@@ -44,20 +56,33 @@ function TodoForm({ addTodo }) {
                         placeholder="Description"
                         className={`${styles['todo-text']} ${styles['desc']}`}
                         value={todo['description']}
-                        onChange={(e) => changeHandler(e, 'description')}
+                        onChange={(e) => fieldChangeHandler(e, 'description')}
                     />
                 </div>
-                <div>
-                    <input type="file" />
-                    <img src={picUplSvg} />
+                <div className={styles['left-inpt-cntr']}>
+                    <div className={styles['left-inpt-cntr__img-ctr']}>
+                        <input
+                            onChange={imageInputChangeHandler}
+                            accept="image/*"
+                            type="file"
+                            ref={imageInputRef}
+                        />
+                        <button
+                            onClick={() => imageInputRef.current.click()}
+                            className={styles['img-upld-btn']}
+                        >
+                            <img src={picUplSvg} />
+                        </button>
+                        {uploadedImage && <div>{uploadedImage.name}</div>}
+                    </div>
                     <div
-                        className={styles['input-container']}
+                        className={styles['date-picker-container']}
                         id="date-picker-container"
                     >
                         <label htmlFor="date-from">Due</label>
                         <input
                             value={todo['dueTime']}
-                            onChange={(e) => changeHandler(e, 'dueTime')}
+                            onChange={(e) => fieldChangeHandler(e, 'dueTime')}
                             type="datetime-local"
                             id="date-checkin"
                             className={styles['date-field']}

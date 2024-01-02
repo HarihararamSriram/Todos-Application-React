@@ -2,9 +2,9 @@ import { useState, useRef, useEffect, useContext } from 'react';
 import CheckBox from './CheckBox';
 import styles from './Todo.module.css';
 import delSvg from '../assets/del.svg';
-import { EDIT_TODO_QUERY } from '../store/TodoQueries';
+import { EDIT_TODO_QUERY, TODO_IMAGES_QUERY } from '../store/TodoQueries';
 import TodoContext from '../store/Todo-Context';
-import { useMutation } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 
 const dateToString = (date) => {
     let year = date.getFullYear();
@@ -12,7 +12,7 @@ const dateToString = (date) => {
     let day = date.getDate();
     let hour = date.getHours();
     let minute = date.getMinutes();
-    let session = 'AM';
+    let session = 'PM';
     if (month.toString().length == 1) {
         month = '0' + month;
     }
@@ -22,7 +22,7 @@ const dateToString = (date) => {
     if (hour.toString().length == 1) {
         if (hour == 0) hour = 12;
         else hour = '0' + hour;
-        session = 'PM';
+        session = 'AM';
     } else {
         if (hour != 12) {
             hour = hour - 12;
@@ -33,7 +33,7 @@ const dateToString = (date) => {
         minute = '0' + minute;
     }
     var dateTime =
-        day + '-' + month + '-' + year + ' ' + hour + ':' + minute + session;
+        `${day}-${month}-${year} ${hour}:${minute} ${session}`;
     return dateTime;
 };
 const [EDIT, ERROR] = [3, 5];
@@ -57,6 +57,14 @@ function Todo({
 
     const todoCtx = useContext(TodoContext);
     const { dispatch } = todoCtx;
+
+    const {
+        loading: loading_img,
+        error: error_img,
+        data: data_img,
+    } = useQuery(TODO_IMAGES_QUERY, {
+        variables: { todoId: id },
+    });
 
     const [
         updateTodo,
@@ -107,7 +115,7 @@ function Todo({
 
     return (
         <div className={todoStyle}>
-            {!editMode[0] && (
+            {!editMode[0] && !loading_img && (
                 <>
                     <CheckBox
                         className={styles['todo-buttons']}
@@ -136,6 +144,13 @@ function Todo({
                         >
                             {dateToString(new Date(dueTime))}
                         </div>
+                        {data_img.images.length > 0 && (
+                            <div className={styles['todo-img']}>
+                                <img
+                                    src={`http://localhost:5000/static/uploads/${data_img.images[0]}`}
+                                />
+                            </div>
+                        )}
                     </div>
 
                     <button

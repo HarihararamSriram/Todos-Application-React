@@ -1,0 +1,29 @@
+.sccss-cntr{
+    width: 100vw;
+    display: grid;
+    place-content: center;
+    max-width: none;
+    margin: 0;
+    min-height: 100vh;
+}
+
+.sccss-cntr__msg{
+    border-radius: 1rem;
+    padding: 0.5rem 0.5rem 3rem 0.5rem;
+    background-color:#61dafb;
+    display: flex;
+    flex-direction: column;
+    box-shadow: rgba(176, 173, 173, 0.25) 0px 50px 100px -20px, rgba(156, 141, 141, 0.3) 0px 30px 60px -30px;
+    width: 22.5rem;
+}
+
+.sccss-cntr__msg>img{
+    border-radius: 1rem;
+    width: 100%;
+}
+
+.sccss-cntr__msg>caption{
+    margin-top: 2rem;
+    font-size: 2rem;
+    font-weight: 700;
+}

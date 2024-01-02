@@ -15,15 +15,16 @@ class Todo(db.Model):
                            server_default=func.now())
 
     # One Todo, many images
-    images = db.relationship("Image", backref="todo", lazy=True)
+    images = db.relationship("Image", backref="todo",
+                             lazy=True, cascade="all, delete-orphan")
     # One user, many todos
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    
+
     def to_dict(self):
         return {
             "id": self.id,
             "title": self.title,
-            "description": self.description,
+            "description": self .description,
             "due_time": self.due_time,
             "completed": self.completed,
         }

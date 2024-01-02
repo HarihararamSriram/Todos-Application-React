@@ -14,6 +14,9 @@
     flex: 1;
     word-wrap: break-word;
     padding: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    row-gap: 1rem;
 }
 
 .todo-checked {
@@ -26,13 +29,18 @@
     padding: 0;
     cursor: pointer;
     font-size: 1.1rem;
+    align-self: flex-start;
+    margin-top: 1.25rem;
 }
 
 .todo-edit-form {
     flex: 1;
-    padding: 0.15rem;
     outline: 2px solid yellowgreen;
     border-radius: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    row-gap: 1rem;
+    padding: 0.5rem;
 }
 
 .todo-text {
@@ -44,6 +52,13 @@
     padding: 0.3em 0;
     display: block;
     color: white;
+}
+
+.todo-img{
+    height: 20vh;
+}
+.todo-img>img{
+    height: 100%;
 }
 
 .title {

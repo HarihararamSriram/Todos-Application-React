@@ -11,13 +11,17 @@ const [INIT_LOAD, ADD, DEL, EDIT, TOGGLE_COMPLETE, ERROR, LOADING] = [
 const todoReducer = (state, action) => {
     switch (action.type) {
         case INIT_LOAD: {
-            return { ...state, todos: action.todos, error: null };
+            return {
+                ...state,
+                todos: action.todos,
+                error: null,
+                loading: false,
+            };
         }
         case ADD: {
             let newTodos = [...state.todos];
-            console.log(newTodos);
             const index = newTodos.findIndex(
-                (todo) => todo.dueTime >= action.newTodo.dueTime,
+                (todo) => todo.dueTime < action.newTodo.dueTime,
             );
             newTodos.splice(index, 0, action.newTodo);
             return { ...state, todos: newTodos };
@@ -58,22 +62,22 @@ const todoReducer = (state, action) => {
     }
 };
 
-function TodoProvider(props) {
+function TodoProvider({ children, username }) {
     const { loading, error, data } = useQuery(ALL_TODO_QUERY, {
-        variables: { username: props.username },
+        variables: { username: username },
     });
-    const { keycloak, initialized } = useKeycloak();
+    const { keycloak } = useKeycloak();
 
     const [state, dispatch] = useReducer(todoReducer, {
         todos: [],
         error: null,
         loading: true,
+        username: username,
     });
 
     useEffect(() => {
         if (loading) dispatch({ type: LOADING, loading: true });
         else {
-            console.log('>>', data);
             if (data) {
                 if (data.error) {
                     // An error can be returned by the graphql endpoint when (1) Access Token is old (2) The access token is invalid and wasn't introspected successfully.
@@ -101,7 +105,7 @@ function TodoProvider(props) {
                 dispatch: dispatch,
             }}
         >
-            {props.children}
+            {children}
         </TodoContext.Provider>
     );
 }

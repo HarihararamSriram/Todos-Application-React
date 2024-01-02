@@ -3,6 +3,10 @@ from api import db
 from api.models import Todo, User
 from datetime import datetime
 
+"""
+-> For the 'Add Todo' operation, we only *flush* the todo object to the database object because we require the 'id' of the todo object for todo<->image relation. Why we don't commit? If image object creation fails we need to *rollback* our todo creation. THAT's IT.
+"""
+
 
 def resolve_todos(obj, _, username=None):
     # Get all todos
@@ -11,8 +15,9 @@ def resolve_todos(obj, _, username=None):
         todos = Todo.query.all()
     else:
         todos = User.query.filter(User.user_name == username).first().todos
+        todos.sort(key=lambda x : x.due_time)
 
-    return {
+    return {    
         "data": todos
     }
 
@@ -53,7 +58,7 @@ def resolve_create_todo(obj, _, title, due_time, user_name, description=None):
 @convert_kwargs_to_snake_case
 def resolve_delete_todo(obj, _, todo_id, remove_index=None):
     # Delete a todo
-
+    #todo: Pending work to cascade delete the 'image' object from the database when the associated 'todo' object is deleted.
     print(remove_index)
     todo = Todo.query.get(todo_id)
     if (todo is None):

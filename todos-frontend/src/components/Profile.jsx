@@ -4,14 +4,14 @@ const Profile = ({ keycloak, initialized }) => {
     }
     return (
         <div>
-            <h1>
+            <h2>
                 Welcome,{' '}
                 {keycloak.authenticated ? keycloak.tokenParsed.name : 'Guest'}
                 {/* {' @'}
                 {keycloak.authenticated
                     ? keycloak.tokenParsed.preferred_username
                     : ''} */}
-            </h1>
+            </h2>
         </div>
     );
 };
