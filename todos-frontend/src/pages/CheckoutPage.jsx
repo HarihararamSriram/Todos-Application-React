@@ -8,9 +8,12 @@ const stripePromise = loadStripe(
 );
 function CheckoutPage() {
     //? Secret we get after Payment; this will be useful for checking Intent Status after payment
+    let isCheckoutFormVisible = true;
     const stripeClientSecretAfterPayment = new URLSearchParams(
         window.location.search,
     ).get('payment_intent_client_secret');
+    if(stripeClientSecretAfterPayment)
+        isCheckoutFormVisible = false;
 
     //? The Same secret we get before Payment
     const stripeClientSecretBeforePayment = new URLSearchParams(
@@ -41,7 +44,7 @@ function CheckoutPage() {
         <>
             {stripeClientSecretLoaded && (
                 <Elements stripe={stripePromise} options={stripeOptions}>
-                    <CheckoutForm />
+                    <CheckoutForm isCheckoutFormVisible={isCheckoutFormVisible} />
                 </Elements>
             )}
         </>

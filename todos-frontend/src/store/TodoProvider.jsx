@@ -62,9 +62,9 @@ const todoReducer = (state, action) => {
     }
 };
 
-function TodoProvider({ children, username }) {
+function TodoProvider({ children, user }) {
     const { loading, error, data } = useQuery(ALL_TODO_QUERY, {
-        variables: { username: username },
+        variables: { username: user.username },
     });
     const { keycloak } = useKeycloak();
 
@@ -72,7 +72,9 @@ function TodoProvider({ children, username }) {
         todos: [],
         error: null,
         loading: true,
-        username: username,
+        username: user.username,
+        isPremium: user.isPremium,
+        accessToken: keycloak.token
     });
 
     useEffect(() => {

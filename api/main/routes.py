@@ -33,24 +33,33 @@ def graphql_playground():
     return explorer_html, 200
 
 
-# @bp.before_request
-# def auth_middleware():
-#     if request.endpoint == "main.graphql_server":
-#         try:
-#             headers = dict(request.headers)
-#             auth_header = headers.get("Authorization", None)
-#             if (not auth_header):
-#                 return {"error": "Access token not provided"}, 401
-#             access_token = auth_header.replace("Bearer ", "")
-#             # * Introspecting the access token we received from front-end
-#             token_info = keycloak_client.introspect(access_token)
-#             if (not token_info["active"]):
-#                 return jsonify({"data": {"todos": None, "error": "Access Token is not active (or) the token is invalid.", "isTokenActive": False}})
+@bp.before_request
+def auth_middleware():
+    print(request.endpoint)
+    end_points = ["main.graphql_server", "main.image_upload_route"]
+    if request.method=="POST" and (request.endpoint in end_points):
+        try:
+            headers = dict(request.headers)
+            auth_header = headers.get("Authorization", None)
 
-#             user_name = token_info["preferred_username"]
-#         except Exception as e:
-#             # On failure, UNAUTHORIZED ACCESS
-#             return jsonify({"data": {"error": str(e)}, "todos": None, "isTokenActive": None})
+            if (not auth_header):
+                return {"error": "Access token not provided"}, 401
+
+            access_token = auth_header.replace("Bearer ", "")
+            # * Introspecting the access token we received from front-end
+            token_info = keycloak_client.introspect(access_token)
+
+            if (not token_info["active"]):
+                return {"data": {"todos": None, "error": "Access Token is not active (or) the token is invalid.", "isTokenActive": False}}
+
+            # Checking whether the user when accessing the "/image-upload" endpoint is authorized to upload image (`premium` role REQ)
+            if (request.endpoint == "main.image_upload_route" and 'premium' not in token_info["realm_access"]["roles"]):
+                return {"data": {"todos": None, "error": "Premium users only"}}
+
+            user_name = token_info["preferred_username"]
+        except Exception as e:
+            # On failure, UNAUTHORIZED ACCESS
+            return {"data": {"error": str(e)}, "todos": None, "isTokenActive": None}
 
 
 @bp.route("/graphql", methods=["POST"])
@@ -73,9 +82,12 @@ def allowed_file(filename):
 
 @bp.route("/image-upload", methods=["POST"])
 def image_upload_route():
+    headers = dict(request.headers)
+    auth_header = headers.get("Authorization", None)
+    
     file = request.files.get("todo_img", None)
     todo_id = request.form.get("todo_id", None)
-    print(">>", todo_id)
+
     if todo_id is None:
         return "'todo_id' field not present in the request", 400
     if file is None:

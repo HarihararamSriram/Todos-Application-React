@@ -1,7 +1,4 @@
-const Profile = ({ keycloak, initialized }) => {
-    if (!initialized) {
-        return <div>Loading...</div>;
-    }
+const Profile = ({ keycloak}) => {
     return (
         <div>
             <h2>

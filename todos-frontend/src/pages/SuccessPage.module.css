@@ -22,8 +22,9 @@
     width: 100%;
 }
 
-.sccss-cntr__msg>caption{
+.sccss-cntr__msg>div{
     margin-top: 2rem;
     font-size: 2rem;
     font-weight: 700;
+    text-align: center;
 }

@@ -55,6 +55,13 @@ function TodoContainer() {
                         const imgUpldRes = await axios.post(
                             'http://localhost:5000/image-upload',
                             imgUpldFormData,
+                            {
+                                headers: {
+                                    Authorization: todoCtx.accessToken
+                                        ? `Bearer ${todoCtx.accessToken}`
+                                        : '',
+                                },
+                            },
                         );
                         dispatch({
                             type: ADD,

@@ -1,23 +1,30 @@
-import { useRef, useState } from 'react';
+import { useContext, useRef, useState } from 'react';
 import styles from './TodoForm.module.css';
 import picUplSvg from '../assets/add_photo.svg';
+import TodoContext from '../store/Todo-Context';
 
 function TodoForm({ todo, setTodo, submitTodoForm }) {
+    const todoCtx = useContext(TodoContext);
+    const { isPremium } = todoCtx;
     const uploadedImage = todo['image'];
-    const setUploadedImage = (newImage) => {
-        setTodo((prev) => {
-            return { ...prev, image: newImage };
+    const setUploadedImage =
+        isPremium &&
+        ((newImage) => {
+            setTodo((prev) => {
+                return { ...prev, image: newImage };
+            });
         });
-    };
     const imageInputRef = useRef(null);
 
-    const imageInputChangeHandler = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            setUploadedImage(file);
-            console.log(`Uploaded file ${file.name}`);
-        }
-    };
+    const imageInputChangeHandler =
+        isPremium &&
+        ((e) => {
+            const file = e.target.files[0];
+            if (file) {
+                setUploadedImage(file);
+                console.log(`Uploaded file ${file.name}`);
+            }
+        });
     const fieldChangeHandler = (e, field) => {
         setTodo((prev) => {
             const newTodo = { ...prev };
@@ -60,21 +67,23 @@ function TodoForm({ todo, setTodo, submitTodoForm }) {
                     />
                 </div>
                 <div className={styles['left-inpt-cntr']}>
-                    <div className={styles['left-inpt-cntr__img-ctr']}>
-                        <input
-                            onChange={imageInputChangeHandler}
-                            accept="image/*"
-                            type="file"
-                            ref={imageInputRef}
-                        />
-                        <button
-                            onClick={() => imageInputRef.current.click()}
-                            className={styles['img-upld-btn']}
-                        >
-                            <img src={picUplSvg} />
-                        </button>
-                        {uploadedImage && <div>{uploadedImage.name}</div>}
-                    </div>
+                    {isPremium && (
+                        <div className={styles['left-inpt-cntr__img-ctr']}>
+                            <input
+                                onChange={imageInputChangeHandler}
+                                accept="image/*"
+                                type="file"
+                                ref={imageInputRef}
+                            />
+                            <button
+                                onClick={() => imageInputRef.current.click()}
+                                className={styles['img-upld-btn']}
+                            >
+                                <img src={picUplSvg} />
+                            </button>
+                            {uploadedImage && <div>{uploadedImage.name}</div>}
+                        </div>
+                    )}
                     <div
                         className={styles['date-picker-container']}
                         id="date-picker-container"

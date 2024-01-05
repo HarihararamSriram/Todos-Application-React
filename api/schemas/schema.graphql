@@ -12,7 +12,7 @@ type Query {
     user(username: String!): User!
 }
 
-type User{
+type User {
     id: ID!
     username: String!
     isPremium: Boolean!

@@ -94,9 +94,9 @@ export const TODO_IMAGES_QUERY = gql`
 
 export const GET_USER = gql`
     query getUser($username: String!) {
-        images(username: $username) {
+        user(username: $username) {
             id
-            is_premium
+            isPremium
             username
         }
     }
@@ -106,7 +106,7 @@ export const SET_USER_PREMIUM = gql`
     mutation setUserPremium($username: String!) {
         setUserPremium(username: $username) {
             id
-            is_premium
+            isPremium
             username
         }
     }
