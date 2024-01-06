@@ -148,8 +148,6 @@ def create_payment():
     except Exception as e:
         return {'error': str(e)}, 403
 
-# ? ROUTE Not required anymore
-
 
 # @bp.route('/login', methods=["POST"])
 # def my_api():

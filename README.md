@@ -28,8 +28,8 @@ Execute the `run.bat` file that runs the following commands:
 
 ✅ Completed the frontend Todos UI and client-side logic for CRUD operations on TODO and integration with backend graphql endpoints.
 
-> Work pending
+✅ Premium feature Stripe Payment and image upload functionality for paid users.
 
-* Premium feature Stripe Payment and image upload functionality for paid users.
+>Please checkout the **TEST** payment credentials and keycloak credentials in the file: `./keycloak_config/credentials.txt`
 
-90% Completed on the requirements.
+Completed on all the requirements.

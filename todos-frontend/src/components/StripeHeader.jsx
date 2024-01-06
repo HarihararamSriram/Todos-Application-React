@@ -1,6 +1,5 @@
-import { useState } from 'react';
 import styles from './Stripe.module.css';
-import { useNavigate, createSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 function StripeHeader({ keycloak }) {

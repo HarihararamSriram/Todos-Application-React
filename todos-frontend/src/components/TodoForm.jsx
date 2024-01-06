@@ -1,4 +1,4 @@
-import { useContext, useRef, useState } from 'react';
+import { useContext, useRef } from 'react';
 import styles from './TodoForm.module.css';
 import picUplSvg from '../assets/add_photo.svg';
 import TodoContext from '../store/Todo-Context';
