@@ -31,7 +31,9 @@ keycloak_admin = KeycloakAdmin(
     server_url=kcl.KEYCLOAK_URL,
     username=kcl.KEYCLOAK_ADMIN_USERNAME,
     password=kcl.KEYCLOAK_ADMIN_PASSWORD,
+    # The realm to which you want ADMIN access using admin account from `user_realm_name` realm
     realm_name="myrealm",
+    # The realm to which 'admin' named user belongs
     user_realm_name="master",
     verify=True
 )

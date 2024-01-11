@@ -1,9 +1,10 @@
 .prem-btn-header {
     padding: 1.25rem 1rem;
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
 }
 
-.prem-btn-wrppr {
+.btn-wrppr {
     background-color: white;
     border: none;
     padding: 0.2rem;
@@ -11,23 +12,43 @@
     transition: background-color 0.3s ease;
 }
 
-.prem-btn {
+.prem-btn-wrppr{
+    justify-self: left;
+    grid-column: 1;
+}
+.logout-btn-wrppr{
+    justify-self: right;
+    grid-column: 2;
+}
+
+.btn {
     z-index: 1;
     padding: 0.5rem 1rem;
     font-size: 1rem;
     font-weight: bold;
-    background-color: #4caf50; /* Green background color */
-    color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     transition: background-color 0.3s ease;
+}
+.prem-btn {
+    background-color: #4caf50; /* Green background color */
+    color: white;
+}
+.logout-btn {
+    background-color: #ff3e3e;
+    color: white;
 }
 
 .prem-btn:hover {
     background-color: #257a29; /* Darker green on hover */
 }
+.logout-btn:hover {
+    background-color: #be3f3f; /* Darker green on hover */
+}
 .prem-btn-wrppr:hover {
     background-color: #257a29;
+}
+.logout-btn-wrppr:hover {
+    background-color: #be3f3f;
 }

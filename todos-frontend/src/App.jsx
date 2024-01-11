@@ -40,6 +40,7 @@ function App() {
 }
 
 function AppMain({ keycloak, username }) {
+    //? The very First GraphQL query to BACKEND that is used to get the User details from the DB.
     const { loading, error, data } = useQuery(GET_USER, {
         variables: { username: username },
     });

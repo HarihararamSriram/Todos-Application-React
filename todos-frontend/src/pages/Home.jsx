@@ -8,7 +8,7 @@ function Home() {
     const { isPremium } = user;
     return (
         <>
-            {!isPremium && <StripeHeader keycloak={keycloak} />}
+            <StripeHeader keycloak={keycloak} isPremium={isPremium} />
             <h1 style={{ textAlign: 'center' }}>Todos</h1>
             <Profile keycloak={keycloak} />
             <TodoContainer />

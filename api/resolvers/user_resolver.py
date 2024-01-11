@@ -7,13 +7,18 @@ from api.extensions import keycloak_client, keycloak_admin as ka
 def resolve_user(obj, _, username):
     user = User.query.filter(User.user_name == username).first()
     if (user is None):
-        raise Exception(f"User with 'username' {username}, doesn't exist")
+        #? A keycloak user with this `user_name` has logged-in, so we CREATE a NEW user for this KeyCloak user in this 'flask_app' client's database (backend).
+        user = User(user_name = username)
+        db.session.add(user)
+        db.session.commit()
+        db.session.refresh(user)
+        return user.to_dict()
+        # raise Exception(f"User with 'username' {username}, doesn't exist")
 
     return user.to_dict()
 
 # @convert_camel_case_to_snake
 def resolve_set_premium(obj, _, username):
-    print(">>>>>>", username)
     uid = ka.get_user_id(username)
     # Checking whether user exists.
     if(uid is None):
